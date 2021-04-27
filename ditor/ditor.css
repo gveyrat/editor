@@ -1,1 +1,5 @@
 #defaultCanvas0 {position:relative;left:50%;transform:translateX(-50%);}
+
+#parent {background-color:lightgrey;}
+
+.labelSmall {font-size:10px;font-weight:bold;text-transform:uppercase;}
