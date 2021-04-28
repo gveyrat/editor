@@ -1,0 +1,7 @@
+#defaultCanvas0 {position:relative;left:50%;transform:translateX(-50%);}
+
+#parent {background-color:#f5f5f5;position:absolute;width:400px;height:630px;}
+#firstChild {position:relative;height:120px;}
+#secondChild {position:relative;height:120px;}
+
+.labelSmall {font-size:10px;font-weight:bold;text-transform:uppercase;}
