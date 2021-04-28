@@ -3,58 +3,72 @@
 
 // const : label (label), indic (value)
 
-let labelInputTitle, labelSliderSize, input, firstInputTitle, posterTitle, titleFontSizeIndic;
+let labelInputTitle, labelSliderSize, input, firstInputTitle, posterTitle, titleFontSizeIndic, labelXSlider, xSliderTitle, labelYSlider, ySliderTitle;
 let backgroundCanvasTitle, labelRedSlider, redSlider, labelGreenSlider, greenSlider, labelBlueSlider, blueSlider;
 
 function titleSetup() {
   let menuElt1 = document.getElementById('firstChild');
+  let group1 = menuElt1.getElementsByClassName('elementGroup').item(0);
+  let group2 = menuElt1.getElementsByClassName('elementGroup').item(1);
+  let group3 = menuElt1.getElementsByClassName('elementGroup').item(2);
+  let group4 = menuElt1.getElementsByClassName('elementGroup').item(3);
 
-  firstInputTitle = createElement('h3', 'Poster\'s name options').parent(menuElt1);
-  firstInputTitle.position(25, 5);
+  labelInputTitle = createSpan('Title : ').addClass('labelSmall').parent(group1);
 
-  labelInputTitle = createSpan('Title : ').parent(menuElt1);
-  labelInputTitle.position(25, 55);
-  labelInputTitle.addClass('labelSmall');
+  input = createInput().attribute('placeholder', 'Poster title').parent(group1);
 
-  input = createInput().attribute('placeholder', 'Poster title').parent(menuElt1);
-  input.position(labelInputTitle.width + 30, 50);
-  input.style('width', '250px');
+  labelSliderSize = createSpan('Size : ').addClass('labelSmall').parent(group2);
 
-  labelSliderSize = createSpan('Size : ').parent(menuElt1);
-  labelSliderSize.position(25, 80);
-  labelSliderSize.addClass('labelSmall');
+  titleSizeSlider = createSlider(12, 100).parent(group2);
 
-  titleSizeSlider = createSlider(12, 50).parent(menuElt1);
-  titleSizeSlider.position(labelSliderSize.width + 30, 75);
-  titleSizeSlider.style('width', '80px');
+  labelXSlider = createSpan('X : ').addClass('labelSmall').parent(group3);
+  xSliderTitle = createSlider(0, 450, 30).parent(group3);
 
-  titleFontSizeIndic = createSpan().parent(menuElt1);
-  titleFontSizeIndic.position(titleSizeSlider.x + titleSizeSlider.width + 15, 77);
+  labelYSlider = createSpan('Y : ').addClass('labelSmall').parent(group4);
+  ySliderTitle = createSlider(0, 630, 30).parent(group4);
+
+  titleFontSizeIndic = createSpan().parent(group2);
 
 }
 
-function setup() {
+function backgroundColorSetup() {
   let menuElt2 = document.getElementById('secondChild');
-  createCanvas(450, 630);
+  let group1 = menuElt2.getElementsByClassName('elementGroup').item(0);
+  let group2 = menuElt2.getElementsByClassName('elementGroup').item(1);
+  let group3 = menuElt2.getElementsByClassName('elementGroup').item(2);
+
+  labelRedSlider = createSpan('Red : ').addClass('labelSmall').parent(group1);
+  redSlider = createSlider(0, 255, 20).parent(group1);
+  labelGreenSlider = createSpan('Green : ').addClass('labelSmall').parent(group2);
+  greenSlider = createSlider(0, 255, 20).parent(group2);
+  labelBlueSlider = createSpan('Blue : ').addClass('labelSmall').parent(group3);
+  blueSlider = createSlider(0, 255, 20).parent(group3);
+}
+
+function setup() {
+  var canvas = createCanvas(450, 630);
+  canvas.parent('#canvas');
 
   titleSetup();
+  backgroundColorSetup();
+}
 
-  backgroundCanvasTitle = createElement('h3', 'Background color').parent(menuElt2);
-
-  labelRedSlider = createSpan('Red : ').addClass('labelSmall').parent(menuElt2);
-  redSlider = createSlider(0, 255, 20).parent(menuElt2);
-  labelGreenSlider = createSpan('Green : ').addClass('labelSmall').parent(menuElt2);
-  greenSlider = createSlider(0, 255, 20).parent(menuElt2);
-  labelBlueSlider = createSpan('Blue : ').addClass('labelSmall').parent(menuElt2);
-  blueSlider = createSlider(0, 255, 20).parent(menuElt2);
-
-  background(20);
+function repeatedText() {
+// TODO : checkbox qui déclence cette fonction
+// TODO : slider qui change i
+ for (let i = 0; i < 10; i ++) {
+   text(input.value(), xSliderTitle.value(), 50 * i + ySliderTitle.value());
+}
 }
 
 function draw() {
   background(redSlider.value(), greenSlider.value(), blueSlider.value());
+  // TODO :  noFill();stroke(255);
   fill(255);
+  textAlign(CENTER);
   textSize(titleSizeSlider.value());
-  titleFontSizeIndic.html(titleSizeSlider.value() + "px");
-  text(input.value(), 0 + 30, height - 30);
+  titleFontSizeIndic.html(titleSizeSlider.value() + "px").addClass('indicSmall');
+  text(input.value(), xSliderTitle.value(), ySliderTitle.value());
+  textFont('Arial Black');
+  // TODO : faire une gestion de l'aligment centré autpmatique, ça peut être stylé
 }
