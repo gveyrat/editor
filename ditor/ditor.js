@@ -1,19 +1,31 @@
 // TODO : changer la couleur de fond + avoir un vrai comportement de display block pour le parent element
 // https://editor.p5js.org/yining/sketches/SyzbgJ0C
+// draggable : https://editor.p5js.org/codingtrain/sketches/U0R5B6Z88
+// full p5 : https://shiffman.net/a2z/intro/
 
 // const : label (label), indic (value)
 
-let labelInputTitle, labelSliderSize, input, firstInputTitle, posterTitle, titleFontSizeIndic, labelXSlider, xSliderTitle, labelYSlider, ySliderTitle;
-let checkboxFillOrNot, checkboxForLoop;
-let backgroundCanvasTitle, labelRedSlider, redSlider, labelGreenSlider, greenSlider, labelBlueSlider, blueSlider;
+let labelInputTitle, labelSliderSize, input, firstInputTitle, posterTitle, titleFontSizeIndic, labelXSlider, xSliderTitle, indicXCentered, labelYSlider, ySliderTitle;
+let fontColorPicker, labelFontColorPicker, strokeFontColorPicker, labelStrokeFontColorPicker;
+let checkboxFillOrNot, checkboxForLoop, slideriValue;
+let centerTitleButton;
+let backgroundCanvasTitle, bgColorPicker, labelBgColorPicker, valueColorPicker;
+
+let canvasName, saveCanvasBtn;
 
 // actions sur le titre
 function titleSetup() {
+
+  // LEFT PANEL
+
   let menuElt1 = document.getElementById('firstChild');
   let group1 = menuElt1.getElementsByClassName('elementGroup').item(0);
   let group2 = menuElt1.getElementsByClassName('elementGroup').item(1);
-  let group3 = menuElt1.getElementsByClassName('elementGroup').item(2);
-  let group4 = menuElt1.getElementsByClassName('elementGroup').item(3);
+  let xAlignement = menuElt1.getElementsByClassName('elementGroup').item(2);
+  let yAlignement = menuElt1.getElementsByClassName('elementGroup').item(3);
+  let titleAlignement = menuElt1.getElementsByClassName('elementGroup').item(4);
+  let titleRepeat = menuElt1.getElementsByClassName('elementGroup').item(5);
+  let fontColor = menuElt1.getElementsByClassName('elementGroup').item(6);
 
   labelInputTitle = createSpan('Title : ').addClass('labelSmall').parent(group1);
 
@@ -25,26 +37,51 @@ function titleSetup() {
 
   titleFontSizeIndic = createSpan().parent(group2);
 
-  labelXSlider = createSpan('X : ').addClass('labelSmall').parent(group3);
-  xSliderTitle = createSlider(0, 450, 30).parent(group3);
+  labelXSlider = createSpan('X : ').addClass('labelSmall').parent(xAlignement);
+  xSliderTitle = createSlider(0, 450, 25, 5).parent(xAlignement);
 
-  labelYSlider = createSpan('Y : ').addClass('labelSmall').parent(group4);
-  ySliderTitle = createSlider(0, 630, 30).parent(group4);
+  indicXCentered = createSpan().parent(xAlignement);
+
+  labelYSlider = createSpan('Y : ').addClass('labelSmall').parent(yAlignement);
+  ySliderTitle = createSlider(0, 630, 30, 5).parent(yAlignement);
 
   checkboxFillOrNot = createCheckbox('Only Stroke', false).parent(menuElt1).addClass('labelSmall');
 
-  checkboxForLoop = createCheckbox('Repeat the title', false).parent(menuElt1).addClass('labelSmall');
+  checkboxForLoop = createCheckbox('Repeat the title', false).parent(titleRepeat).addClass('labelSmall');
+
+  slideriValue = createSlider(2, 10).parent(titleRepeat);
+
+  // TODO : centerTitleButton = createButton('\uf037').parent(titleAlignement);
+
+  labelFontColorPicker = createSpan('Font color : ').addClass('labelSmall').parent(fontColor);
+  fontColorPicker = createColorPicker('#FFF').parent(fontColor);
+  labelStrokeFontColorPicker = createSpan('Stroke color : ').addClass('labelSmall').parent(fontColor);
+  strokeFontColorPicker = createColorPicker('#FFF').parent(fontColor);
+
+
+  // RIGHT PANEL
+
+    let exportPanel = document.getElementById('exportPanel');
+
+    canvasName = createInput().attribute('placeholder', 'Art name').parent(exportPanel);
+
+    saveCanvasBtn = createButton('Save canvas !').parent(exportPanel);
+    saveCanvasBtn.mousePressed(exportCanvas);
 
 // TODO : checkbox for textLeading (= lineheight)
+}
+
+function exportCanvas() {
+  saveCanvas(canvasName.value(), 'jpg');
 }
 
 // contourer ou remplir le titre
 function fillOrNot() {
   if (checkboxFillOrNot.checked()) {
     noFill();
-    stroke(255);
+    stroke(strokeFontColorPicker.value());
   } else {
-    fill(255);
+    fill(fontColorPicker.value());
     noStroke();
   }
 }
@@ -52,45 +89,48 @@ function fillOrNot() {
 // actions sur l'arrière plan du canvas
 function backgroundColorSetup() {
   let menuElt2 = document.getElementById('secondChild');
-  let group1 = menuElt2.getElementsByClassName('elementGroup').item(0);
-  let group2 = menuElt2.getElementsByClassName('elementGroup').item(1);
-  let group3 = menuElt2.getElementsByClassName('elementGroup').item(2);
+  let bgGroup = menuElt2.getElementsByClassName('elementGroup').item(0);
 
-  labelRedSlider = createSpan('Red : ').addClass('labelSmall').parent(group1);
-  redSlider = createSlider(0, 255, 20).parent(group1);
-  labelGreenSlider = createSpan('Green : ').addClass('labelSmall').parent(group2);
-  greenSlider = createSlider(0, 255, 20).parent(group2);
-  labelBlueSlider = createSpan('Blue : ').addClass('labelSmall').parent(group3);
-  blueSlider = createSlider(0, 255, 20).parent(group3);
+  labelBgColorPicker = createSpan('Color : ').addClass('labelSmall').parent(bgGroup);
+  bgColorPicker = createColorPicker('#171717').parent(bgGroup);
 }
 
 function setup() {
   var canvas = createCanvas(450, 630);
   canvas.parent('#canvas');
+  textFont('Arial Black');
+  textAlign(CENTER);
 
   titleSetup();
   backgroundColorSetup();
 }
 
-function repeatTheTitle() {
-  // TODO : checkbox qui déclence cette fonction
-  // TODO : slider qui change i
+// 1 seul titre ou jusqu'à 15 fois le titre
+function printTitle() {
+  // TODO : centrer auto ci-dessous, comprendre pourquoi ça marche pass
+  //centerTitleButton.mousePressed(() => text(input.value(), width/2, ySliderTitle.value()));
+
   if (checkboxForLoop.checked()) {
-    for (let i = 0; i < 10; i++) {
+    slideriValue.removeClass('disabled');
+    for (let i = 0; i < slideriValue.value(); i++) {
       text(input.value(), xSliderTitle.value(), 50 * i + ySliderTitle.value());
     }
   } else {
     text(input.value(), xSliderTitle.value(), ySliderTitle.value());
+    slideriValue.addClass('disabled');
   }
+
 }
 
 function draw() {
-  background(redSlider.value(), greenSlider.value(), blueSlider.value());
+  background(bgColorPicker.value());
   fillOrNot();
-  textAlign(CENTER);
   textSize(titleSizeSlider.value());
   titleFontSizeIndic.html(titleSizeSlider.value() + "px").addClass('indicSmall');
-  repeatTheTitle();
-  textFont('Arial Black');
-  // TODO : faire une gestion de l'aligment centré autpmatique, ça peut être stylé
+  printTitle();
+  if (xSliderTitle.value() == width/2) {
+    indicXCentered.html('centered!').addClass('indicSmallRed');
+  } else {
+    indicXCentered.html('');
+  }
 }
