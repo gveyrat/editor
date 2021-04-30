@@ -8,3 +8,4 @@ app inspirations :
 - https://www.youtube.com/watch?v=LaarVR1AOvs
 - https://www.youtube.com/watch?v=HkQdaVCQ2DA
 - https://martinlorenz.com/
+- https://news.nike.com/news/our-carbon-footprint-and-our-next-steps
