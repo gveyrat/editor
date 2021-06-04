@@ -184,7 +184,7 @@ function drawShit() {
       }
     break;
     case "Gradient" :
-      circleShit.addClass('disabled');
+      //circleShit.addClass('disabled');
       image(drawLayer, 5, 5);
       drawLayer.height = drawLayerHeightSlider.value();
       drawLayer.background(bgColorPicker.value());
