@@ -13,7 +13,14 @@ let backgroundCanvasTitle, bgColorPicker, labelBgColorPicker, valueColorPicker;
 
 let canvasName, saveCanvasBtn;
 
+let drawCirclesOrNot, drawSquaresOrNot;
+let drawLayer, drawLayerHeight;
+
 // actions sur le titre
+
+// TODO : mettre une modal avant toute chose pour demander la largeur / hauteur de la zone de travail afin que le mec puisse se faire le design de son choix
+// mais ça me paraît être une V12 ça
+
 function titleSetup() {
 
   // LEFT PANEL
@@ -59,16 +66,26 @@ function titleSetup() {
   strokeFontColorPicker = createColorPicker('#FFF').parent(fontColor);
 
 
-  // RIGHT PANEL
+  // MENU EXPORT
 
-    let exportPanel = document.getElementById('exportPanel');
+  let exportPanel = document.getElementById('exportPanel');
 
-    canvasName = createInput().attribute('placeholder', 'Art name').parent(exportPanel);
+  canvasName = createInput().attribute('placeholder', 'Art name').parent(exportPanel);
 
-    saveCanvasBtn = createButton('Save canvas !').parent(exportPanel);
-    saveCanvasBtn.mousePressed(exportCanvas);
+  saveCanvasBtn = createButton('Save canvas !').parent(exportPanel);
+  saveCanvasBtn.mousePressed(exportCanvas);
 
-// TODO : checkbox for textLeading (= lineheight)
+  // RIGHT PANEL : design shit
+
+  let rightPanel = document.getElementById('designShit');
+
+  drawCirclesOrNot = createCheckbox('Add a circle', false).parent(rightPanel).addClass('labelSmall');
+  drawLayerHeight = createSlider(100, 620, 550).parent(rightPanel);
+
+  drawSquaresOrNot = createCheckbox('Add a square', false).parent(rightPanel).addClass('labelSmall');
+  squaresLayerHeight = createSlider(100, 620, 550).parent(rightPanel);
+
+  // TODO : checkbox for textLeading (= lineheight)
 }
 
 function exportCanvas() {
@@ -95,6 +112,8 @@ function backgroundColorSetup() {
   bgColorPicker = createColorPicker('#171717').parent(bgGroup);
 }
 
+
+// SETUP
 function setup() {
   var canvas = createCanvas(450, 630);
   canvas.parent('#canvas');
@@ -103,6 +122,12 @@ function setup() {
 
   titleSetup();
   backgroundColorSetup();
+
+  drawLayer = createGraphics(440, 620);
+
+  if (drawSquaresOrNot.checked()) {
+    noLoop();
+  }
 }
 
 // 1 seul titre ou jusqu'à 15 fois le titre
@@ -122,15 +147,46 @@ function printTitle() {
 
 }
 
+// les dessins : le coeur du truc
+function drawShit() {
+  if (drawCirclesOrNot.checked()) { // cercles
+    image(drawLayer, 5, 5);
+    drawLayer.height = drawLayerHeight.value();
+    drawLayer.background(bgColorPicker.value());
+    for (let i = 0; i <= 900; i += 10) {
+      drawLayer.noFill();
+      drawLayer.stroke(255);
+      drawLayer.strokeWeight(2);
+      drawLayer.ellipse(drawLayer.width / 2, drawLayer.height / 2, i, i);
+    }
+  } else if (drawSquaresOrNot.checked()) { // carrés
+    image(drawLayer, 5, 5);
+    drawLayer.height = squaresLayerHeight.value();
+    drawLayer.background(bgColorPicker.value());
+    for (let i = 0; i < drawLayer.width; i += 10) {
+      for (let j = 0; j < drawLayer.height; j += 10) {
+      drawLayer.noStroke();
+      drawLayer.fill(map(i, width, height, 0, 255), map(i, 0, height, 255, 0), map(j, 0, height, 0, 255));
+      drawLayer.fill(map(drawLayerHeight.value(), width, height, 0, 255), map(i, 0, height, 255, 0), map(j, 0, height, 0, 255));
+      drawLayer.strokeWeight(2);
+      drawLayer.rect(i, j , 10);
+      }
+    }
+  } else {
+    background(bgColorPicker.value());
+  }
+}
+
 function draw() {
   background(bgColorPicker.value());
   fillOrNot();
   textSize(titleSizeSlider.value());
   titleFontSizeIndic.html(titleSizeSlider.value() + "px").addClass('indicSmall');
-  printTitle();
-  if (xSliderTitle.value() == width/2) {
+  if (xSliderTitle.value() == width / 2) {
     indicXCentered.html('centered!').addClass('indicSmallRed');
   } else {
     indicXCentered.html('');
   }
+  drawShit();
+  printTitle();
 }
