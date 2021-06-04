@@ -14,7 +14,16 @@ let backgroundCanvasTitle, bgColorPicker, labelBgColorPicker, valueColorPicker;
 let canvasName, saveCanvasBtn;
 
 let drawCirclesOrNot, drawSquaresOrNot;
-let drawLayer, drawLayerHeight;
+let drawLayer, drawLayerHeightSlider;
+
+let designSelect;
+let circleSpacingLabel, circleSpacingSlider;
+
+let gradientColorLabel, gradientColorSlider;
+
+let circleShit;
+
+// let radio; test des boutons radio, je suis pas encore convaincu par le rendu html, ça complique les choses avec les options de params par la suite
 
 // actions sur le titre
 
@@ -78,12 +87,29 @@ function titleSetup() {
   // RIGHT PANEL : design shit
 
   let rightPanel = document.getElementById('designShit');
+  let chooseYourDesign = document.getElementById('chooseYourDesign');
+  let layerHeightOption = document.getElementById('layerHeightOption');
+  circleShit = document.getElementById('circlesOptions');
+  let firtCirclesOption = document.getElementById('firstCirclesOption');
+  let gradientShit = rightPanel.getElementsByClassName('elementGroup').item(2);
+  let firstGradientOption = document.getElementById('firstGradientOption');
 
-  drawCirclesOrNot = createCheckbox('Add a circle', false).parent(rightPanel).addClass('labelSmall');
-  drawLayerHeight = createSlider(100, 620, 550).parent(rightPanel);
+  drawLayerHeightLabel = createSpan('What is your choice : ').addClass('labelSmall').parent(chooseYourDesign);
+  designSelect = createSelect().parent(chooseYourDesign);
+  designSelect.option('Choose');
+  designSelect.option('Circles');
+  designSelect.option('Gradient');
 
-  drawSquaresOrNot = createCheckbox('Add a square', false).parent(rightPanel).addClass('labelSmall');
-  squaresLayerHeight = createSlider(100, 620, 550).parent(rightPanel);
+  drawLayerHeightLabel = createSpan('Layer height : ').addClass('labelSmall').parent(layerHeightOption);
+  drawLayerHeightSlider = createSlider(100, 620, 550).parent(layerHeightOption);
+
+  circleSpacingLabel = createSpan('Spacing between circles : ').addClass('labelSmall').parent(firtCirclesOption);
+  circleSpacingSlider = createSlider(15, 100, 30).addClass('labelSmall').parent(firtCirclesOption);
+
+  gradientColorLabel = createSpan('What gradient do you want : ').addClass('labelSmall').parent(firstGradientOption);
+  gradientColorSlider = createSlider(15, 600, 100).addClass('labelSmall').parent(firstGradientOption);
+
+  // TODO : créer un slider pour impacter la couleur du gradient
 
   // TODO : checkbox for textLeading (= lineheight)
 }
@@ -124,10 +150,6 @@ function setup() {
   backgroundColorSetup();
 
   drawLayer = createGraphics(440, 620);
-
-  if (drawSquaresOrNot.checked()) {
-    noLoop();
-  }
 }
 
 // 1 seul titre ou jusqu'à 15 fois le titre
@@ -149,31 +171,36 @@ function printTitle() {
 
 // les dessins : le coeur du truc
 function drawShit() {
-  if (drawCirclesOrNot.checked()) { // cercles
-    image(drawLayer, 5, 5);
-    drawLayer.height = drawLayerHeight.value();
-    drawLayer.background(bgColorPicker.value());
-    for (let i = 0; i <= 900; i += 10) {
-      drawLayer.noFill();
-      drawLayer.stroke(255);
-      drawLayer.strokeWeight(2);
-      drawLayer.ellipse(drawLayer.width / 2, drawLayer.height / 2, i, i);
-    }
-  } else if (drawSquaresOrNot.checked()) { // carrés
-    image(drawLayer, 5, 5);
-    drawLayer.height = squaresLayerHeight.value();
-    drawLayer.background(bgColorPicker.value());
-    for (let i = 0; i < drawLayer.width; i += 10) {
-      for (let j = 0; j < drawLayer.height; j += 10) {
-      drawLayer.noStroke();
-      drawLayer.fill(map(i, width, height, 0, 255), map(i, 0, height, 255, 0), map(j, 0, height, 0, 255));
-      drawLayer.fill(map(drawLayerHeight.value(), width, height, 0, 255), map(i, 0, height, 255, 0), map(j, 0, height, 0, 255));
-      drawLayer.strokeWeight(2);
-      drawLayer.rect(i, j , 10);
+  switch (designSelect.value()) {
+    case "Circles" :
+      image(drawLayer, 5, 5);
+      drawLayer.height = drawLayerHeightSlider.value();
+      drawLayer.background(bgColorPicker.value());
+      for (let i = 0; i <= 900; i += circleSpacingSlider.value()) {
+        drawLayer.noFill();
+        drawLayer.stroke(255);
+        drawLayer.strokeWeight(2);
+        drawLayer.ellipse(drawLayer.width / 2, drawLayer.height / 2, i, i);
       }
-    }
-  } else {
-    background(bgColorPicker.value());
+    break;
+    case "Gradient" :
+      circleShit.addClass('disabled');
+      image(drawLayer, 5, 5);
+      drawLayer.height = drawLayerHeightSlider.value();
+      drawLayer.background(bgColorPicker.value());
+      for (let i = 0; i < drawLayer.width; i += 10) {
+        for (let j = 0; j < drawLayer.height; j += 10) {
+        drawLayer.noStroke();
+        //drawLayer.fill(map(i, width, height, 0, 255), map(i, 0, height, 255, 0), map(j, 0, height, 0, 255));
+        drawLayer.fill(map(gradientColorSlider.value(), 0, height, 0, 255), map(i, 0, height, 255, 0), map(j, 0, height, 0, 255));
+        drawLayer.strokeWeight(2);
+        drawLayer.rect(i, j , 10);
+        }
+      }
+      break;
+      default :
+        background(bgColorPicker.value());
+    break;
   }
 }
 

@@ -12,14 +12,15 @@ h3 {margin-left:10px;}
 #designShit {background-color:#f5f5f5;width:370px;height:630px;}
 
 .elementGroup {display:flex;flex-direction:row;align-items:center;margin-top:10px;}
-.elementGroup *:first-child {margin-left:15px;width:70px;}
+#optionsPanel .elementGroup *:first-child {margin-left:15px;width:70px;}
 
 .elementGroup.medium input[type="checkbox"] {width:auto;margin-left:0;}
 .elementGroup.medium .labelSmall {margin-left:15px;width:auto;display:flex;align-items:center;}
 
+.elementGroup.large .labelSmall {width:auto;}
+
 .indicSmall, .labelSmall {font-size:11px;font-weight:bold;text-transform:uppercase;}
 .indicSmall {margin-left:10px;}
 .indicSmallRed {font-size:11px;font-weight:bold;text-transform:uppercase;margin-left:10px;color:red;}
-
 
 .disabled {opacity:.7; pointer-events:none;}
